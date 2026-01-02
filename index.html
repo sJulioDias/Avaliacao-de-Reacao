@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Avaliação de Reação - Turma Presencial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .hidden { display: none; }
+    .actions { margin-top: 16px; display: flex; justify-content: flex-end; gap: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Avaliação de Reação - Turma Presencial</h1>
+    </header>
 
+    <!-- 1. Dados do Treinamento -->
+    <section class="card" id="sec-treinamento">
+      <h2>Dados do Treinamento</h2>
+      <div class="grid-1">
+        <div>
+          <label class="field" for="curso">Nome do Curso</label>
+          <input type="text" id="curso" name="curso" placeholder="Digite o nome do curso" />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="field" for="local">Local</label>
+          <input type="text" id="local" name="local" placeholder="Informe o local" />
+        </div>
+        <div>
+          <label class="field" for="data">Data</label>
+          <input type="date" id="data" name="data" />
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 2. Educadores -->
+    <section class="card hidden" id="sec-educadores">
+      <h2>Educadores</h2>
+      <div class="grid-1">
+        <div>
+          <label class="field" for="educadorA">Educador A</label>
+          <input type="text" id="educadorA" name="educadorA" placeholder="Nome do Educador A" />
+        </div>
+      </div>
+      <div class="grid-1">
+        <div>
+          <label class="field" for="educadorB">Educador B</label>
+          <input type="text" id="educadorB" name="educadorB" placeholder="Nome do Educador B" />
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 3. Desempenho Educador A -->
+    <section class="card hidden" id="sec-desempenho-A">
+      <h2>Desempenho do Educador A</h2>
+      <table class="items">
+        <thead><tr><th style="width:60%">Item</th><th>Nota</th></tr></thead>
+        <tbody id="body-desempenho-A"></tbody>
+      </table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 4. Desempenho Educador B -->
+    <section class="card hidden" id="sec-desempenho-B">
+      <h2>Desempenho do Educador B</h2>
+      <table class="items">
+        <thead><tr><th style="width:60%">Item</th><th>Nota</th></tr></thead>
+        <tbody id="body-desempenho-B"></tbody>
+      </table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 5. Procedimento -->
+    <section class="card hidden" id="sec-procedimento">
+      <h2>Procedimento de Aprendizagem</h2>
+      <table class="items"><tbody id="body-procedimento"></tbody></table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 6. Processo -->
+    <section class="card hidden" id="sec-processo">
+      <h2>Processo de Aprendizagem</h2>
+      <table class="items"><tbody id="body-processo"></tbody></table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 7. Recursos -->
+    <section class="card hidden" id="sec-recursos">
+      <h2>Recursos e Apoio</h2>
+      <table class="items"><tbody id="body-recursos"></tbody></table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 8. Resultados -->
+    <section class="card hidden" id="sec-resultados">
+      <h2>Resultados e Aplicabilidade</h2>
+      <table class="items"><tbody id="body-resultados"></tbody></table>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="nextStep()">Próximo</button>
+      </div>
+    </section>
+
+    <!-- 9. Comentários -->
+    <section class="card hidden" id="sec-comentarios">
+      <h2>Comentários e Sugestões</h2>
+      <textarea id="comentarios" name="comentarios"></textarea>
+      <div class="actions">
+        <button class="btn" type="button" onclick="prevStep()">Voltar</button>
+        <button class="btn primary" type="button" onclick="baixarJSON()">Exportar JSON</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    let currentStep = 0;
+    const steps = [
+      "sec-treinamento","sec-educadores","sec-desempenho-A","sec-desempenho-B",
+      "sec-procedimento","sec-processo","sec-recursos","sec-resultados","sec-comentarios"
+    ];
+
+    function showStep(index){
+      steps.forEach((id,i)=>{
+        const el=document.getElementById(id);
+        if(el) el.style.display=(i===index)?"block":"none";
+      });
+    }
+
+    function validarStep(stepId) {
+      const section = document.getElementById(stepId);
+      if (!section) return true;
+      const ratings = section.querySelectorAll('.star-rating');
+      for (let ctrl of ratings) {
+        const val = ctrl.getValue?.();
+        if (val === 0 || val === null) {
+          alert("Por favor, responda todas as perguntas antes de continuar.");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function nextStep(){
+      const currentId = steps[currentStep];
+      if (!validarStep(currentId)) return;
+      if(currentStep<steps.length-1){
+        currentStep++;
+        showStep(currentStep);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function prevStep(){
+      if(currentStep>0){
+        currentStep--;
+        showStep(currentStep);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    showStep(currentStep);
+  </script>
+</body>
+</html>
